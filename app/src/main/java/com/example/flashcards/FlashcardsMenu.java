@@ -23,7 +23,10 @@ public class FlashcardsMenu extends AppCompatActivity {
 
         setContentView(R.layout.activity_flashcard);
 
-        ArrayList<FlashcardMenuItem> exampleList=db.returnArrayListOfFlashcardMenuItem("admin");
+        Bundle extras =getIntent().getExtras();
+        String login=extras.getString("login");
+
+        ArrayList<FlashcardMenuItem> exampleList=db.returnArrayListOfFlashcardMenuItem(login);
 
 
         recyclerView=findViewById(R.id.recyclerView);

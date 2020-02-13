@@ -35,12 +35,13 @@ public class MainActivity extends AppCompatActivity {
 
         final Intent flashcardsMenuIntent = new Intent(this,FlashcardsMenu.class);
         final Intent addAccountIntent = new Intent(this,CreateAccountActivity.class);
-        //db.addUser("admin","admin","admin");
+
         singInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Verifier verifier = new Verifier(LOGIN.getText().toString(),PASSWORD.getText().toString(),db);
                 if(verifier.verifyAccount()){
+                    flashcardsMenuIntent.putExtra("login",LOGIN.getText().toString());
                     startActivity(flashcardsMenuIntent);
                 }
                 else{

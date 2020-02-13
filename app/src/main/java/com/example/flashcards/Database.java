@@ -21,18 +21,19 @@ public class Database extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(
                 "create table users(" +
-                        "user_id integer primary key autoincrement," +
+                        " user_id integer primary key autoincrement," +
                         " name text," +
                         " login text," +
                         " password text);" +
                         "");
         db.execSQL(
                 "create table collections(" +
-                        "collection_id integer primary key autoincrement," +
+                        " collection_id integer primary key autoincrement," +
                         " collection_name text," +
                         " quantity integer," +
                         " image_resources integer," +
-                        " user_id integer);" +
+                        " user_id integer," +
+                        " FOREIGN KEY(user_id) REFERENCES users(user_id));" +
                         "");
         db.execSQL(
                 "create table flashcards(" +
@@ -42,6 +43,15 @@ public class Database extends SQLiteOpenHelper {
                         " collection_id integer);" +
                         "");
     }
+    public void addCollection(String collectionName, int quantity,int imageResources, int userId){
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(" collection_name",collectionName);
+        values.put(" quantity",quantity);
+        values.put(" image_resources",imageResources);
+        values.put(" user_id",userId);
+        db.insert(" collections",null,values);
+    }
     public void addUser(String name, String login, String password){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -49,18 +59,9 @@ public class Database extends SQLiteOpenHelper {
         values.put("login",login);
         values.put("password",password);
         db.insert("users",null,values);
-        addCollection("Main",0,R.drawable.ic_cancel_red_40dp,0);
-        addCollection("Main",0,R.drawable.ic_cancel_red_40dp,0);
+        addCollection("main",0,R.drawable.ic_cancel_red_40dp,getUserId(login));
+        addCollection("main1",0,R.drawable.ic_cancel_red_40dp,getUserId(login));
         db.close();
-    }
-    public void addCollection(String collectionName, int quantity,int imageResources, int userId){
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("collection_name",collectionName);
-        values.put("quantity",quantity);
-        values.put("image_resources",imageResources);
-        values.put("user_id",userId);
-        db.insert("collections",null,values);
     }
     public void addFlashcard(String wordPl, String wordEn, int collectionId){
         SQLiteDatabase db = getWritableDatabase();
@@ -71,25 +72,27 @@ public class Database extends SQLiteOpenHelper {
         db.insert("flashcards",null,values);
     }
 
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+    }
+
     /*
         Get user data
      */
     private Cursor getAllRecordsFromUsersByLogin(String login){
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM users WHERE login ='"+login+"'ORDER BY login;",null);
+        cursor.moveToFirst();
         return cursor;
     }
-
-
-    public int getUserId(int user_id){
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT user_id FROM collections WHERE user_id ='"+user_id+"';",null);
+    public int getUserId(String login){
+        Cursor cursor = getAllRecordsFromUsersByLogin(login);
         return cursor.getInt(0);
     }
-
-
     public String getUserName(String login){
-        return getAllRecordsFromUsersByLogin(login).getString(1);
+        Cursor cursor = getAllRecordsFromUsersByLogin(login);
+        return cursor.getString(1);
     }
     public boolean doesTheLoginExist(String login){
         return getAllRecordsFromUsersByLogin(login).moveToFirst();
@@ -102,7 +105,7 @@ public class Database extends SQLiteOpenHelper {
     /*
         Get collections data
      */
-    private Cursor getAllRecordsFromCollectionsByUserId(int userId){
+    private Cursor getAllRecordsCursorFromCollectionsByUserId(int userId){
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT *" +
                 " FROM collections" +
@@ -110,38 +113,32 @@ public class Database extends SQLiteOpenHelper {
                 "' ORDER BY collection_name;",null);
         return cursor;
     }
-    public int numbersOfCollectionElements(int userId){
-        return getAllRecordsFromCollectionsByUserId(userId).getCount();
-    }
-
 
     public String getUserCollectionNameUsingIndex(String login, int index){
-       if(getAllRecordsFromUsersByLogin("a").moveToFirst()){
-           return "Number" + 0;
-       }
-       else
-           return "Dain";
+        Cursor cursor = getAllRecordsCursorFromCollectionsByUserId(getUserId(login));
+        cursor.moveToPosition(index);
+        return cursor.getString(1);
+    }
+    public int getCollectionQuantityNameUsingIndex(String login, int index){
+        Cursor cursor = getAllRecordsCursorFromCollectionsByUserId(getUserId(login));
+        cursor.moveToPosition(index);
+        return  cursor.getInt(1);
+    }
+    public int getCollectionImageResourcesNameUsingIndex(String login, int index){
+        Cursor cursor = getAllRecordsCursorFromCollectionsByUserId(getUserId(login));
+        cursor.moveToPosition(index);
+        return cursor.getInt(2);
+    }
+    public int numbersOfCollectionElements(String login){
+        Cursor cursor = getAllRecordsCursorFromCollectionsByUserId(getUserId(login));
+        return  cursor.getCount();
     }
 
-
-    public int getCollectionQuantityNameUsingIndex(int userId, int index){
-        getAllRecordsFromCollectionsByUserId(userId).moveToPosition(index);
-        return getAllRecordsFromCollectionsByUserId(userId).getInt(2);
-    }
-    public int getCollectionImageResourcesNameUsingIndex(int userId, int index){
-        getAllRecordsFromCollectionsByUserId(userId).moveToPosition(index);
-        return getAllRecordsFromCollectionsByUserId(userId).getInt(3);
-    }
     public ArrayList<FlashcardMenuItem> returnArrayListOfFlashcardMenuItem(String login){
         ArrayList<FlashcardMenuItem> exampleList = new ArrayList<>();
-        for(int i =0 ; i<10; i++) {
-            exampleList.add(new FlashcardMenuItem(R.drawable.ic_cancel_red_40dp, getUserCollectionNameUsingIndex("admin",0), "0"));
+        for(int i =0 ; i<numbersOfCollectionElements(login); i++) {
+            exampleList.add(new FlashcardMenuItem(getCollectionImageResourcesNameUsingIndex(login,i), getUserCollectionNameUsingIndex(login,i), getCollectionQuantityNameUsingIndex(login,i)+" elements"));
         }
         return exampleList;
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
     }
 }
