@@ -17,14 +17,40 @@ public class FlashcardsMenuAdapter extends RecyclerView.Adapter<FlashcardsMenuAd
         public ImageView logoImageView;
         public TextView collectionNameTextView;
         public TextView numberOfElementsTextView;
+        public ImageView playImageView;
+        public ImageView deleteImageView;
+        public ImageView editImageView;
 
         public FlashcardsMenuViewHolder(@NonNull View itemView) {
             super(itemView);
             logoImageView = itemView.findViewById(R.id.logoImageView);
             collectionNameTextView = itemView.findViewById(R.id.collectionNameTextView);
             numberOfElementsTextView = itemView.findViewById(R.id.numberOfElementsTextView);
+            playImageView = itemView.findViewById(R.id.playImageView);
+            deleteImageView = itemView.findViewById(R.id.deleteImageView);
+            editImageView = itemView.findViewById(R.id.editImageView);
+
+            playImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+            deleteImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+            deleteImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
         }
     }
+
 
     public FlashcardsMenuAdapter(ArrayList<FlashcardMenuItem> flashcardMenuItemArrayList){
         this.flashcardMenuItemArrayList=flashcardMenuItemArrayList;

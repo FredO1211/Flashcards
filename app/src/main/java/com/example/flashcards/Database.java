@@ -113,7 +113,11 @@ public class Database extends SQLiteOpenHelper {
                 "' ORDER BY collection_name;",null);
         return cursor;
     }
-
+    public int getCollectionIdUsingIndex(String login, int index){
+        Cursor cursor = getAllRecordsCursorFromCollectionsByUserId(getUserId(login));
+        cursor.moveToPosition(index);
+        return cursor.getInt(0);
+    }
     public String getUserCollectionNameUsingIndex(String login, int index){
         Cursor cursor = getAllRecordsCursorFromCollectionsByUserId(getUserId(login));
         cursor.moveToPosition(index);
@@ -137,7 +141,11 @@ public class Database extends SQLiteOpenHelper {
     public ArrayList<FlashcardMenuItem> returnArrayListOfFlashcardMenuItem(String login){
         ArrayList<FlashcardMenuItem> exampleList = new ArrayList<>();
         for(int i =0 ; i<numbersOfCollectionElements(login); i++) {
-            exampleList.add(new FlashcardMenuItem(getCollectionImageResourcesNameUsingIndex(login,i), getUserCollectionNameUsingIndex(login,i), getCollectionQuantityNameUsingIndex(login,i)+" elements"));
+            exampleList.add(new FlashcardMenuItem(
+                    getCollectionImageResourcesNameUsingIndex(login,i),
+                    getUserCollectionNameUsingIndex(login,i),
+                    getCollectionQuantityNameUsingIndex(login,i)+" elements",
+                    getCollectionIdUsingIndex(login,i)));
         }
         return exampleList;
     }
