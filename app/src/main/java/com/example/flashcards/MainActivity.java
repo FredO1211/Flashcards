@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
         final String WRONG_PASSWORD_TEXT="Wrong login data";
         final int DURATION = Toast.LENGTH_SHORT;
         final Toast WRONG_LOGIN_DATA_TOAST = Toast.makeText(this, WRONG_PASSWORD_TEXT, DURATION);
-        ContextHolder.setContext(this);
 
         final TextView LOGIN = findViewById(R.id.loginEditText);
         final TextView PASSWORD = findViewById(R.id.passwordEditText);

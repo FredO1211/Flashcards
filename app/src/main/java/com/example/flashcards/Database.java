@@ -126,16 +126,23 @@ public class Database extends SQLiteOpenHelper {
     public int getCollectionQuantityNameUsingIndex(String login, int index){
         Cursor cursor = getAllRecordsCursorFromCollectionsByUserId(getUserId(login));
         cursor.moveToPosition(index);
-        return  cursor.getInt(1);
+        return  cursor.getInt(2);
     }
     public int getCollectionImageResourcesNameUsingIndex(String login, int index){
         Cursor cursor = getAllRecordsCursorFromCollectionsByUserId(getUserId(login));
         cursor.moveToPosition(index);
-        return cursor.getInt(2);
+        return cursor.getInt(3);
     }
     public int numbersOfCollectionElements(String login){
         Cursor cursor = getAllRecordsCursorFromCollectionsByUserId(getUserId(login));
         return  cursor.getCount();
+    }
+
+    public void deleteCurrentCollection(int collectionId){
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("DELETE *" +
+                " FROM collections" +
+                " WHERE collection_id='"+collectionId+"';");
     }
 
     public ArrayList<FlashcardMenuItem> returnArrayListOfFlashcardMenuItem(String login){
