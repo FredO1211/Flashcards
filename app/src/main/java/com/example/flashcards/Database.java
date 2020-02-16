@@ -140,9 +140,9 @@ public class Database extends SQLiteOpenHelper {
 
     public void deleteCurrentCollection(int collectionId){
         SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("DELETE *" +
+        db.execSQL("DELETE" +
                 " FROM collections" +
-                " WHERE collection_id='"+collectionId+"';");
+                " WHERE collection_id = '"+collectionId+"';");
     }
 
     public ArrayList<FlashcardMenuItem> returnArrayListOfFlashcardMenuItem(String login){

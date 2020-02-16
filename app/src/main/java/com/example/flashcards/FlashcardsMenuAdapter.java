@@ -17,7 +17,15 @@ public class FlashcardsMenuAdapter extends RecyclerView.Adapter<FlashcardsMenuAd
     private ArrayList<FlashcardMenuItem> flashcardMenuItemArrayList;
     private Database db;
     private FlashcardsMenu flashcardsMenu;
+    private OnItemClickListener onItemClickListener;
 
+    public interface OnItemClickListener {
+        void onDeleteClick(int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener){
+        this.onItemClickListener=onItemClickListener;
+    }
 
     public static class FlashcardsMenuViewHolder extends  RecyclerView.ViewHolder{
 
@@ -28,7 +36,7 @@ public class FlashcardsMenuAdapter extends RecyclerView.Adapter<FlashcardsMenuAd
         public ImageView deleteImageView;
         public ImageView editImageView;
 
-        public FlashcardsMenuViewHolder(@NonNull View itemView, final Database db, final FlashcardsMenu flashcardsMenu) {
+        public FlashcardsMenuViewHolder(@NonNull View itemView, final Database db, final FlashcardsMenu flashcardsMenu, final OnItemClickListener onItemClickListener) {
             super(itemView);
             logoImageView = itemView.findViewById(R.id.logoImageView);
             collectionNameTextView = itemView.findViewById(R.id.collectionNameTextView);
@@ -46,7 +54,12 @@ public class FlashcardsMenuAdapter extends RecyclerView.Adapter<FlashcardsMenuAd
             deleteImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    db.addCollection("Dupa",1,R.drawable.ic_favorite_24dp,db.getUserId(flashcardsMenu.login));
+                    if(onItemClickListener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            onItemClickListener.onDeleteClick(position);
+                        }
+                    }
                     flashcardsMenu.recreate();
                 }
             });
@@ -64,7 +77,7 @@ public class FlashcardsMenuAdapter extends RecyclerView.Adapter<FlashcardsMenuAd
     @Override
     public FlashcardsMenuViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.single_menu_item,viewGroup,false);
-        FlashcardsMenuViewHolder flashcardsMenuViewHolder = new FlashcardsMenuViewHolder(view, db, flashcardsMenu);
+        FlashcardsMenuViewHolder flashcardsMenuViewHolder = new FlashcardsMenuViewHolder(view, db, flashcardsMenu,this.onItemClickListener);
         return  flashcardsMenuViewHolder;
     }
 
@@ -79,6 +92,6 @@ public class FlashcardsMenuAdapter extends RecyclerView.Adapter<FlashcardsMenuAd
 
     @Override
     public int getItemCount() {
-        return flashcardMenuItemArrayList.size();
+        return this.flashcardMenuItemArrayList.size();
     }
 }

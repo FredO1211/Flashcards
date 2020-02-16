@@ -28,4 +28,8 @@ public class FlashcardMenuItem {
     public String getCounterElementsText() {
         return counterElementsText;
     }
+
+    public int getCollectionId() {
+        return collectionId;
+    }
 }

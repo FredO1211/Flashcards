@@ -17,7 +17,7 @@ public class FlashcardsMenu extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private FloatingActionButton addCollectionButton;
     private final Database db = new Database(this);
-    public ArrayList<FlashcardMenuItem> exampleList;
+    public ArrayList<FlashcardMenuItem> itemsList;
     private final int REQUEST_RECREATE=0;
     public String login;
 
@@ -25,13 +25,13 @@ public class FlashcardsMenu extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_flashcard);
 
         final Intent intent = new Intent(this,CreateCollectionActivity.class);
         Bundle extras =getIntent().getExtras();
         final String LOGIN=extras.getString("login");
         this.login=LOGIN;
 
-        setContentView(R.layout.activity_flashcard);
         addCollectionButton= findViewById(R.id.addCollectionButton);
         addCollectionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,15 +41,22 @@ public class FlashcardsMenu extends AppCompatActivity {
             }
         });
 
-        exampleList=db.returnArrayListOfFlashcardMenuItem(LOGIN);
+        itemsList=db.returnArrayListOfFlashcardMenuItem(LOGIN);
 
         recyclerView=findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         layoutManager= new LinearLayoutManager(this);
-        adapter= new FlashcardsMenuAdapter(exampleList, db,this);
+        adapter= new FlashcardsMenuAdapter(itemsList, db,this);
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+
+        adapter.setOnItemClickListener(new FlashcardsMenuAdapter.OnItemClickListener() {
+            @Override
+            public void onDeleteClick(int position) {
+                db.deleteCurrentCollection(itemsList.get(position).getCollectionId());
+            }
+        });
     }
 
     @Override
