@@ -40,7 +40,8 @@ public class Database extends SQLiteOpenHelper {
                         " flashcard_id integer primary key autoincrement," +
                         " word_pl text," +
                         " word_en text," +
-                        " collection_id integer);" +
+                        " collection_id integer," +
+                        " FOREIGN KEY(collection_id) REFERENCES collections(collection_id));" +
                         "");
     }
     public void addCollection(String collectionName, int quantity,int imageResources, int userId){
@@ -105,6 +106,7 @@ public class Database extends SQLiteOpenHelper {
     /*
         Get collections data
      */
+
     private Cursor getAllRecordsCursorFromCollectionsByUserId(int userId){
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT *" +
@@ -133,7 +135,7 @@ public class Database extends SQLiteOpenHelper {
         cursor.moveToPosition(index);
         return cursor.getInt(3);
     }
-    public int numbersOfCollectionElements(String login){
+    public int numberOfCollectionElements(String login){
         Cursor cursor = getAllRecordsCursorFromCollectionsByUserId(getUserId(login));
         return  cursor.getCount();
     }
@@ -145,14 +147,45 @@ public class Database extends SQLiteOpenHelper {
                 " WHERE collection_id = '"+collectionId+"';");
     }
 
-    public ArrayList<FlashcardMenuItem> returnArrayListOfFlashcardMenuItem(String login){
+    public ArrayList<FlashcardMenuItem> returnCollectionsArrayList(String login){
         ArrayList<FlashcardMenuItem> exampleList = new ArrayList<>();
-        for(int i =0 ; i<numbersOfCollectionElements(login); i++) {
+        for(int i =0 ; i<numberOfCollectionElements(login); i++) {
             exampleList.add(new FlashcardMenuItem(
                     getCollectionImageResourcesNameUsingIndex(login,i),
                     getUserCollectionNameUsingIndex(login,i),
                     getCollectionQuantityNameUsingIndex(login,i)+" elements",
                     getCollectionIdUsingIndex(login,i)));
+        }
+        return exampleList;
+    }
+
+    /*
+            get items data
+     */
+
+    private Cursor getAllRecordsCursorFromFlashcardsByCollectionId(int collectionId){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT *" +
+                " FROM flashcards" +
+                " WHERE collection_id='"+collectionId +
+                "' ORDER BY word_pl;",null);
+        return cursor;
+    }
+
+    public int getCollectionId(int collectionId){
+        Cursor cursor = getAllRecordsCursorFromFlashcardsByCollectionId(collectionId);
+        return cursor.getInt(0);
+    }
+
+    public int numberItemOfCollection(int collectionId){
+        Cursor cursor = getAllRecordsCursorFromFlashcardsByCollectionId(collectionId);
+        return  cursor.getCount();
+    }
+
+    public ArrayList<FlashcardItem> returnItemsArrayListOfCollection(int collectionId){
+        ArrayList<FlashcardItem> exampleList = new ArrayList<>();
+        for(int i =0 ; i<numberItemOfCollection(collectionId); i++) {
+            exampleList.add(new FlashcardItem("dobry","good"));
         }
         return exampleList;
     }

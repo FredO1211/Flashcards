@@ -17,9 +17,10 @@ public class FlashcardsMenu extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private FloatingActionButton addCollectionButton;
     private final Database db = new Database(this);
-    public ArrayList<FlashcardMenuItem> itemsList;
+    public ArrayList<FlashcardMenuItem> collectionsList;
     private final int REQUEST_RECREATE=0;
     public String login;
+    public Intent editCollectionActivity;
 
 
     @Override
@@ -27,7 +28,8 @@ public class FlashcardsMenu extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flashcard);
 
-        final Intent intent = new Intent(this,CreateCollectionActivity.class);
+        final Intent createCollectionIntent = new Intent(this,CreateCollectionActivity.class);
+        editCollectionActivity = new Intent(this,EditCollectionActivity.class);
         Bundle extras =getIntent().getExtras();
         final String LOGIN=extras.getString("login");
         this.login=LOGIN;
@@ -36,17 +38,17 @@ public class FlashcardsMenu extends AppCompatActivity {
         addCollectionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intent.putExtra("login",LOGIN);
-                startActivityForResult(intent,REQUEST_RECREATE);
+                createCollectionIntent.putExtra("login",LOGIN);
+                startActivityForResult(createCollectionIntent,REQUEST_RECREATE);
             }
         });
 
-        itemsList=db.returnArrayListOfFlashcardMenuItem(LOGIN);
+        collectionsList=db.returnCollectionsArrayList(LOGIN);
 
         recyclerView=findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         layoutManager= new LinearLayoutManager(this);
-        adapter= new FlashcardsMenuAdapter(itemsList, db,this);
+        adapter= new FlashcardsMenuAdapter(collectionsList, db,this);
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
@@ -54,7 +56,7 @@ public class FlashcardsMenu extends AppCompatActivity {
         adapter.setOnItemClickListener(new FlashcardsMenuAdapter.OnItemClickListener() {
             @Override
             public void onDeleteClick(int position) {
-                db.deleteCurrentCollection(itemsList.get(position).getCollectionId());
+                db.deleteCurrentCollection(collectionsList.get(position).getCollectionId());
             }
         });
     }

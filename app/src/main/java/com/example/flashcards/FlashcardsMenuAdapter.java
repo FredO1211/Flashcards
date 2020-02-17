@@ -1,8 +1,6 @@
 package com.example.flashcards;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.net.sip.SipSession;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -61,6 +59,17 @@ public class FlashcardsMenuAdapter extends RecyclerView.Adapter<FlashcardsMenuAd
                         }
                     }
                     flashcardsMenu.recreate();
+                }
+            });
+            editImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                    if(onItemClickListener != null){
+//                        int position = getAdapterPosition();
+//                        if(position != RecyclerView.NO_POSITION){
+//                            flashcardsMenu.startActivity(flashcardsMenu.editCollectionActivity);
+//                        }
+//                    }
                 }
             });
         }

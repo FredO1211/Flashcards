@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 
 public class CreateCollectionActivity extends AppCompatActivity {
 
@@ -18,9 +17,18 @@ public class CreateCollectionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_collection);
 
         final Button createCollectionButton = findViewById(R.id.createCollectionButton);
+        final Button cancelButton = findViewById(R.id.cancelButton);
         final EditText collectionNameEditText = findViewById(R.id.collectionNameEditText);
+        final Intent intent = new Intent(this,EditCollectionActivity.class);
         Bundle extras =getIntent().getExtras();
         final String LOGIN=extras.getString("login");
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(intent);
+            }
+        });
 
         createCollectionButton.setOnClickListener(new View.OnClickListener() {
             @Override
