@@ -34,6 +34,19 @@ public class FlashcardItemAdapter extends RecyclerView.Adapter<FlashcardItemAdap
             polishMiningTextView= itemView.findViewById(R.id.polishMiningTextView);
             englishMiningTextView= itemView.findViewById(R.id.englishMiningTextView);
             deleteItemImageView = itemView.findViewById(R.id.deleteItemImageView);
+
+            deleteItemImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(onItemClickListener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            onItemClickListener.onDeleteClick(position);
+                        }
+                    }
+                    editCollectionActivity.recreate();
+                }
+            });
         }
     }
 

@@ -34,6 +34,8 @@ public class EditCollectionActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         collectionId = bundle.getInt("collection");
 
+        itemsList=db.returnItemsArrayListOfCollection(collectionId);
+
         addItemButton = findViewById(R.id.addItemButton);
         addItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,8 +44,6 @@ public class EditCollectionActivity extends AppCompatActivity {
                 startActivityForResult(addFlashcardItem,REQUEST_RECREATE);
             }
         });
-        itemsList=db.returnItemsArrayListOfCollection(collectionId);
-
 
         recyclerView=findViewById(R.id.flashcardRecyclerView);
         recyclerView.setHasFixedSize(true);
@@ -53,7 +53,12 @@ public class EditCollectionActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
-
+        adapter.setOnItemClickListener(new FlashcardItemAdapter.OnItemClickListener() {
+            @Override
+            public void onDeleteClick(int position) {
+                db.deleteCurrentItem(itemsList.get(position).getFlashcardId());
+            }
+        });
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
