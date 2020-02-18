@@ -59,6 +59,7 @@ public class EditCollectionActivity extends AppCompatActivity {
                 db.deleteCurrentItem(itemsList.get(position).getFlashcardId());
             }
         });
+
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

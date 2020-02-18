@@ -23,7 +23,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         db.addUser(name,login,password);
     }
 
-    private void verifyingUserData(EditText login, EditText name, EditText password, EditText confirmPassword, Database db, Toast loginExisting, Toast differentPasswords){
+    private void verifyingUserData(EditText login,  EditText password, EditText confirmPassword, Database db, Toast loginExisting, Toast differentPasswords){
         if(db.doesTheLoginExist(login.getText().toString())){
             loginExisting.show();
             login.setText(null);
@@ -73,7 +73,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         acceptCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                verifyingUserData(loginEditText,nameEditText,passwordEditText,confirmPasswordEditText,db,EXISTING_LOGIN_DATA_TOAST,DIFFERENT_PASSWORDS_DATA_TOAST);
+                verifyingUserData(loginEditText,passwordEditText,confirmPasswordEditText,db,EXISTING_LOGIN_DATA_TOAST,DIFFERENT_PASSWORDS_DATA_TOAST);
             }
         });
 

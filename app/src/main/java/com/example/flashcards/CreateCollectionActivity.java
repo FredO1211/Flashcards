@@ -1,6 +1,5 @@
 package com.example.flashcards;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -19,14 +18,14 @@ public class CreateCollectionActivity extends AppCompatActivity {
         final Button createCollectionButton = findViewById(R.id.createCollectionButton);
         final Button cancelButton = findViewById(R.id.cancelButton);
         final EditText collectionNameEditText = findViewById(R.id.collectionNameEditText);
-        final Intent intent = new Intent(this,EditCollectionActivity.class);
         Bundle extras =getIntent().getExtras();
         final String LOGIN=extras.getString("login");
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(intent);
+                collectionNameEditText.setText(null);
+                finish();
             }
         });
 

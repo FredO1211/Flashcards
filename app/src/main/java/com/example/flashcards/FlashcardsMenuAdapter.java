@@ -1,6 +1,5 @@
 package com.example.flashcards;
 
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,6 +19,7 @@ public class FlashcardsMenuAdapter extends RecyclerView.Adapter<FlashcardsMenuAd
     public interface OnItemClickListener {
         void onDeleteClick(int position);
         void onEditClick(int position);
+        void onPlayClick(int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener){
@@ -47,7 +47,12 @@ public class FlashcardsMenuAdapter extends RecyclerView.Adapter<FlashcardsMenuAd
             playImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    if(onItemClickListener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            onItemClickListener.onPlayClick(position);
+                        }
+                    }
                 }
             });
             deleteImageView.setOnClickListener(new View.OnClickListener() {

@@ -29,7 +29,7 @@ public class FlashcardItemAdapter extends RecyclerView.Adapter<FlashcardItemAdap
         public TextView englishMiningTextView;
         public ImageView deleteItemImageView;
 
-        public FlashcardItemViewHolder(@NonNull View itemView, Database db, final EditCollectionActivity editCollectionActivity, final OnItemClickListener onItemClickListener) {
+        public FlashcardItemViewHolder(@NonNull View itemView, final EditCollectionActivity editCollectionActivity, final OnItemClickListener onItemClickListener) {
             super(itemView);
             polishMiningTextView= itemView.findViewById(R.id.polishMiningTextView);
             englishMiningTextView= itemView.findViewById(R.id.englishMiningTextView);
@@ -60,7 +60,7 @@ public class FlashcardItemAdapter extends RecyclerView.Adapter<FlashcardItemAdap
     @Override
     public FlashcardItemViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.single_collection_item,viewGroup,false);
-        FlashcardItemViewHolder flashcardItemViewHolder = new FlashcardItemViewHolder(view, db,editCollectionActivity,this.onItemClickListener);
+        FlashcardItemViewHolder flashcardItemViewHolder = new FlashcardItemViewHolder(view, editCollectionActivity,this.onItemClickListener);
         return flashcardItemViewHolder;
     }
 
