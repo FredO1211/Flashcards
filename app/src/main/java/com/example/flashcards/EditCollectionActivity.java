@@ -1,6 +1,7 @@
 package com.example.flashcards;
 
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,8 +20,8 @@ public class EditCollectionActivity extends AppCompatActivity {
     private Button goBackButton;
     private final Database db = new Database(this);
     public ArrayList<FlashcardItem> itemsList;
-    //private final int REQUEST_RECREATE=0;
-    public String collection;
+    private final int REQUEST_RECREATE=1;
+    public int collectionId;
 
 
 
@@ -29,21 +30,19 @@ public class EditCollectionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_colection);
 
-        //Bundle bundle = getIntent().getExtras();
-        //collection = bundle.getString("collection");
+        final Intent addFlashcardItem = new Intent(this, AddItemActivity.class);
+        Bundle bundle = getIntent().getExtras();
+        collectionId = bundle.getInt("collection");
 
         addItemButton = findViewById(R.id.addItemButton);
         addItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                addFlashcardItem.putExtra("collectionID",collectionId);
+                startActivityForResult(addFlashcardItem,REQUEST_RECREATE);
             }
         });
-        itemsList=new ArrayList<FlashcardItem>();
-        itemsList.add(new FlashcardItem("aa","bb"));
-        itemsList.add(new FlashcardItem("aa1","bb1"));
-        itemsList.add(new FlashcardItem("2a","b2b"));
-        itemsList.add(new FlashcardItem("2a","b2b"));
+        itemsList=db.returnItemsArrayListOfCollection(collectionId);
 
 
         recyclerView=findViewById(R.id.flashcardRecyclerView);
@@ -55,5 +54,13 @@ public class EditCollectionActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
 
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode==REQUEST_RECREATE){
+            if (resultCode == RESULT_OK){
+                this.recreate();
+            }
+        }
     }
 }

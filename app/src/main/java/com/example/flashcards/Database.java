@@ -160,7 +160,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
     /*
-            get items data
+            Get items data
      */
 
     private Cursor getAllRecordsCursorFromFlashcardsByCollectionId(int collectionId){
@@ -172,9 +172,21 @@ public class Database extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public int getCollectionId(int collectionId){
+    public int getItemIdUsingIndex(int collectionId, int index){
         Cursor cursor = getAllRecordsCursorFromFlashcardsByCollectionId(collectionId);
+        cursor.moveToPosition(index);
         return cursor.getInt(0);
+    }
+    public String getPolishMining(int collectionId, int index){
+        Cursor cursor=getAllRecordsCursorFromFlashcardsByCollectionId(collectionId);
+        cursor.moveToPosition(index);
+        return cursor.getString(1);
+    }
+
+    public String getEnglishMining(int collectionId, int index){
+        Cursor cursor=getAllRecordsCursorFromFlashcardsByCollectionId(collectionId);
+        cursor.moveToPosition(index);
+        return cursor.getString(2);
     }
 
     public int numberItemOfCollection(int collectionId){
@@ -185,8 +197,15 @@ public class Database extends SQLiteOpenHelper {
     public ArrayList<FlashcardItem> returnItemsArrayListOfCollection(int collectionId){
         ArrayList<FlashcardItem> exampleList = new ArrayList<>();
         for(int i =0 ; i<numberItemOfCollection(collectionId); i++) {
-            exampleList.add(new FlashcardItem("dobry","good"));
+            exampleList.add(new FlashcardItem(getPolishMining(collectionId,i),getEnglishMining(collectionId,i),getItemIdUsingIndex(collectionId,i)));
         }
         return exampleList;
+    }
+
+    public void deleteCurrentItem(int flashcardId){
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("DELETE" +
+                " FROM flashcards" +
+                " WHERE flashcard_id = '"+flashcardId+"';");
     }
 }

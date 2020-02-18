@@ -19,6 +19,7 @@ public class FlashcardsMenuAdapter extends RecyclerView.Adapter<FlashcardsMenuAd
 
     public interface OnItemClickListener {
         void onDeleteClick(int position);
+        void onEditClick(int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener){
@@ -64,12 +65,12 @@ public class FlashcardsMenuAdapter extends RecyclerView.Adapter<FlashcardsMenuAd
             editImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    if(onItemClickListener != null){
-//                        int position = getAdapterPosition();
-//                        if(position != RecyclerView.NO_POSITION){
-//                            flashcardsMenu.startActivity(flashcardsMenu.editCollectionActivity);
-//                        }
-//                    }
+                    if(onItemClickListener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            onItemClickListener.onEditClick(position);
+                        }
+                    }
                 }
             });
         }

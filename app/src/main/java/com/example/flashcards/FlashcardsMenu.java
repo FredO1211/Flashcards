@@ -20,7 +20,7 @@ public class FlashcardsMenu extends AppCompatActivity {
     public ArrayList<FlashcardMenuItem> collectionsList;
     private final int REQUEST_RECREATE=0;
     public String login;
-    public Intent editCollectionActivity;
+
 
 
     @Override
@@ -29,7 +29,7 @@ public class FlashcardsMenu extends AppCompatActivity {
         setContentView(R.layout.activity_flashcard);
 
         final Intent createCollectionIntent = new Intent(this,CreateCollectionActivity.class);
-        editCollectionActivity = new Intent(this,EditCollectionActivity.class);
+        final Intent editCollectionActivity = new Intent(this,EditCollectionActivity.class);
         Bundle extras =getIntent().getExtras();
         final String LOGIN=extras.getString("login");
         this.login=LOGIN;
@@ -57,6 +57,12 @@ public class FlashcardsMenu extends AppCompatActivity {
             @Override
             public void onDeleteClick(int position) {
                 db.deleteCurrentCollection(collectionsList.get(position).getCollectionId());
+            }
+
+            @Override
+            public void onEditClick(int position) {
+                editCollectionActivity.putExtra("collection",db.getCollectionIdUsingIndex(LOGIN,position));
+                startActivity(editCollectionActivity);
             }
         });
     }
