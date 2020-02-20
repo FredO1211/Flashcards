@@ -31,7 +31,7 @@ public class Database extends SQLiteOpenHelper {
                         " collection_id integer primary key autoincrement," +
                         " collection_name text," +
                         " quantity integer," +
-                        " image_resources integer," +
+                        " favorite_collection boolean," +
                         " user_id integer," +
                         " FOREIGN KEY(user_id) REFERENCES users(user_id));" +
                         "");
@@ -40,17 +40,20 @@ public class Database extends SQLiteOpenHelper {
                         " flashcard_id integer primary key autoincrement," +
                         " word_pl text," +
                         " word_en text," +
+                        " points int," +
+                        " favorite_flashcard boolean," +
+                        " last_using_date date," +
                         " collection_id integer," +
                         " FOREIGN KEY(collection_id) REFERENCES collections(collection_id));" +
                         "");
     }
-    public void addCollection(String collectionName, int quantity,int imageResources, int userId){
+    public void addCollection(String collectionName, int quantity, int userId){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(" collection_name",collectionName);
-        values.put(" quantity",quantity);
-        values.put(" image_resources",imageResources);
-        values.put(" user_id",userId);
+        values.put("collection_name",collectionName);
+        values.put("quantity",quantity);
+        values.put("favorite_collection",false);
+        values.put("user_id",userId);
         db.insert(" collections",null,values);
     }
     public void addUser(String name, String login, String password){
@@ -60,15 +63,16 @@ public class Database extends SQLiteOpenHelper {
         values.put("login",login);
         values.put("password",password);
         db.insert("users",null,values);
-        addCollection("main",0,R.drawable.ic_cancel_red_40dp,getUserId(login));
-        addCollection("main1",0,R.drawable.ic_cancel_red_40dp,getUserId(login));
+        addCollection("main",0,getUserId(login));
         db.close();
     }
-    public void addFlashcard(String wordPl, String wordEn, int collectionId){
+    public void addFlashcard(String wordPl, String wordEn, int collectionId,int points){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("word_pl",wordPl);
         values.put("word_en",wordEn);
+        values.put("points",points);
+        values.put("favorite_flashcard",false);
         values.put("collection_id",collectionId);
         db.insert("flashcards",null,values);
     }
@@ -130,9 +134,18 @@ public class Database extends SQLiteOpenHelper {
         cursor.moveToPosition(index);
         return  cursor.getInt(2);
     }
-    public int getCollectionImageResourcesNameUsingIndex(String login, int index){
+    public boolean getFavouriteCollection(String login, int index){
         Cursor cursor = getAllRecordsCursorFromCollectionsByUserId(getUserId(login));
         cursor.moveToPosition(index);
+        return cursor.getInt(3)>0;
+    }
+    public int getFavouriteCollection(int collectionId){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT *" +
+                " FROM collections" +
+                " WHERE collection_id='"+collectionId +
+                "' ORDER BY collection_name;",null);
+        cursor.moveToFirst();
         return cursor.getInt(3);
     }
     public int numberOfCollectionElements(String login){
@@ -147,13 +160,20 @@ public class Database extends SQLiteOpenHelper {
                 " WHERE collection_id = '"+collectionId+"';");
     }
 
+    public void setFavourite(int collectionId){
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("UPDATE collections " +
+                "SET favorite_collection = '"+ (getFavouriteCollection(collectionId)-1)*(-1) +
+                "' WHERE collection_id = '"+collectionId+"';");
+    }
+
     public ArrayList<FlashcardMenuItem> returnCollectionsArrayList(String login){
         ArrayList<FlashcardMenuItem> exampleList = new ArrayList<>();
         for(int i =0 ; i<numberOfCollectionElements(login); i++) {
             exampleList.add(new FlashcardMenuItem(
-                    getCollectionImageResourcesNameUsingIndex(login,i),
+                    getFavouriteCollection(login,i),
                     getUserCollectionNameUsingIndex(login,i),
-                    getCollectionQuantityNameUsingIndex(login,i)+" elements",
+                    numberItemOfCollection(getCollectionIdUsingIndex(login,i))+" elements",
                     getCollectionIdUsingIndex(login,i)));
         }
         return exampleList;
@@ -194,12 +214,49 @@ public class Database extends SQLiteOpenHelper {
         return  cursor.getCount();
     }
 
+    public void setPoints(int points, int flashcardId){
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("UPDATE flashcards " +
+                "SET points = '"+ points +
+                "' WHERE flashcard_id = '"+flashcardId+"';");
+    }
+
+
     public ArrayList<FlashcardItem> returnItemsArrayListOfCollection(int collectionId){
-        ArrayList<FlashcardItem> exampleList = new ArrayList<>();
+        ArrayList<FlashcardItem> collectionItemsArrayList = new ArrayList<>();
         for(int i =0 ; i<numberItemOfCollection(collectionId); i++) {
-            exampleList.add(new FlashcardItem(getPolishMining(collectionId,i),getEnglishMining(collectionId,i),getItemIdUsingIndex(collectionId,i)));
+            collectionItemsArrayList.add(new FlashcardItem(
+                    getPolishMining(collectionId,i),
+                    getEnglishMining(collectionId,i),
+                    getItemIdUsingIndex(collectionId,i)));
         }
-        return exampleList;
+        return collectionItemsArrayList;
+    }
+
+    public ArrayList<FlashcardItem> returnItemsArrayListOfCollectionSortedByPoints(int collectionId,int size){
+        ArrayList<FlashcardItem> collectionItemsArrayList = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT *" +
+                " FROM flashcards" +
+                " WHERE collection_id='"+collectionId +
+                "' ORDER BY points;",null);
+        if(cursor.getCount()>size){
+            for (int i=0; i<size;i++){
+                collectionItemsArrayList.add(new FlashcardItem(
+                        getPolishMining(collectionId,i),
+                        getEnglishMining(collectionId,i),
+                        getItemIdUsingIndex(collectionId,i)));
+            }
+        }
+        else {
+            for (int i=0; i<cursor.getCount();i++){
+                collectionItemsArrayList.add(new FlashcardItem(
+                        getPolishMining(collectionId,i),
+                        getEnglishMining(collectionId,i),
+                        getItemIdUsingIndex(collectionId,i)));
+            }
+        }
+        return collectionItemsArrayList;
     }
 
     public void deleteCurrentItem(int flashcardId){

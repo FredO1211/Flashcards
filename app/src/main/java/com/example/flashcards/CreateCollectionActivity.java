@@ -32,7 +32,7 @@ public class CreateCollectionActivity extends AppCompatActivity {
         createCollectionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                db.addCollection(collectionNameEditText.getText().toString(),0,R.drawable.ic_favorite_24dp,db.getUserId(LOGIN));
+                db.addCollection(collectionNameEditText.getText().toString(),0,db.getUserId(LOGIN));
                 setResult(RESULT_OK);
                 finish();
             }

@@ -23,6 +23,7 @@ public class FlashcardsMenu extends AppCompatActivity {
     private final int REQUEST_RECREATE=0;
     public String login;
     private Intent writhingFlashcardIntent;
+    private Intent readingFlashcardIntent;
 
 
 
@@ -34,6 +35,8 @@ public class FlashcardsMenu extends AppCompatActivity {
         final Intent createCollectionIntent = new Intent(this,CreateCollectionActivity.class);
         final Intent editCollectionIntent = new Intent(this,EditCollectionActivity.class);
         writhingFlashcardIntent = new Intent(this, WrithingFlashcardActivity.class);
+        readingFlashcardIntent = new Intent(this,ReadingFlashcardActivity.class);
+
         Bundle extras =getIntent().getExtras();
         final String LOGIN=extras.getString("login");
         this.login=LOGIN;
@@ -65,14 +68,22 @@ public class FlashcardsMenu extends AppCompatActivity {
 
             @Override
             public void onEditClick(int position) {
-                editCollectionIntent.putExtra("collection",db.getCollectionIdUsingIndex(LOGIN,position));
-                startActivity(editCollectionIntent);
+                editCollectionIntent.putExtra("collectionId",db.getCollectionIdUsingIndex(LOGIN,position));
+                startActivityForResult(editCollectionIntent,REQUEST_RECREATE);
             }
 
             @Override
             public void onPlayClick(int position) {
+                readingFlashcardIntent.putExtra("collectionId",db.getCollectionIdUsingIndex(LOGIN,position));
+                writhingFlashcardIntent.putExtra("collectionId",db.getCollectionIdUsingIndex(LOGIN,position));
                 AlertDialog alertDialog=dialogBox().create();
                 alertDialog.show();
+            }
+
+            @Override
+            public void onFavouriteClick(int position) {
+                db.setFavourite(collectionsList.get(position).getCollectionId());
+                recreate();
             }
         });
     }
@@ -85,7 +96,7 @@ public class FlashcardsMenu extends AppCompatActivity {
                 .setPositiveButton("By reading", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        startActivity(readingFlashcardIntent);
                     }
                 })
                 .setNegativeButton("By writhing", new DialogInterface.OnClickListener() {

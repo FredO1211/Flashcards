@@ -29,7 +29,7 @@ public class AddItemActivity extends AppCompatActivity {
         addFlashcardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                db.addFlashcard(polishMiningEditText.getText().toString(),englishMiningEditText.getText().toString(),collectionId);
+                db.addFlashcard(polishMiningEditText.getText().toString(),englishMiningEditText.getText().toString(),collectionId,20);
                 setResult(RESULT_OK);
                 finish();
             }

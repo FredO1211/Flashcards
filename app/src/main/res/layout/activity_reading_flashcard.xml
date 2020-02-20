@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ReadingFlashcardActivity">
+
+    <TextView
+        android:id="@+id/polishMiningReadingTextView"
+        android:layout_width="200dp"
+        android:layout_height="35dp"
+        android:text="TextView"
+        android:textColor="@android:color/black"
+        android:textSize="25dp"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.335" />
+
+    <ImageView
+        android:id="@+id/polishFlag"
+        android:layout_width="35dp"
+        android:layout_height="18dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="20dp"
+        android:layout_toEndOf="@+id/logoCardView"
+        app:layout_constraintBottom_toBottomOf="@+id/polishMiningReadingTextView"
+        app:layout_constraintEnd_toStartOf="@+id/polishMiningReadingTextView"
+        app:layout_constraintTop_toTopOf="@+id/polishMiningReadingTextView"
+        app:layout_constraintVertical_bias="0.5"
+        app:srcCompat="@drawable/polish_flag" />
+
+    <TextView
+        android:id="@+id/englishMiningReadingTextView"
+        android:layout_width="200dp"
+        android:layout_height="35dp"
+        android:text="TextView"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:textSize="25dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/polishFlag2"
+        android:layout_width="35dp"
+        android:layout_height="18dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="20dp"
+        android:layout_toEndOf="@+id/logoCardView"
+        app:layout_constraintBottom_toBottomOf="@+id/englishMiningReadingTextView"
+        app:layout_constraintEnd_toStartOf="@+id/englishMiningReadingTextView"
+        app:layout_constraintTop_toTopOf="@+id/englishMiningReadingTextView"
+        app:layout_constraintVertical_bias="0.5"
+        app:srcCompat="@drawable/english_flag" />
+
+    <Button
+        android:id="@+id/showAnswerButton"
+        android:layout_width="163dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="88dp"
+        android:background="@drawable/buttonshape"
+        android:text="Show"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/confirmCardView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.75"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.75">
+        <ImageView
+            android:id="@+id/confirmImageView"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            app:srcCompat="@drawable/ic_check_green_40dp" />
+
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/negateCardView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.25"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.75">
+        <ImageView
+            android:id="@+id/negateImageView"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            app:srcCompat="@drawable/ic_cancel_red_40dp" />
+
+    </android.support.v7.widget.CardView>
+
+</android.support.constraint.ConstraintLayout>

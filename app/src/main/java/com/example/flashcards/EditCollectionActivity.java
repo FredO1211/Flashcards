@@ -17,7 +17,7 @@ public class EditCollectionActivity extends AppCompatActivity {
     private FlashcardItemAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private FloatingActionButton addItemButton;
-    private Button goBackButton;
+    private Button savePropertiesButton;
     private final Database db = new Database(this);
     public ArrayList<FlashcardItem> itemsList;
     private final int REQUEST_RECREATE=1;
@@ -32,16 +32,25 @@ public class EditCollectionActivity extends AppCompatActivity {
 
         final Intent addFlashcardItem = new Intent(this, AddItemActivity.class);
         Bundle bundle = getIntent().getExtras();
-        collectionId = bundle.getInt("collection");
+        collectionId = bundle.getInt("collectionId");
 
         itemsList=db.returnItemsArrayListOfCollection(collectionId);
 
         addItemButton = findViewById(R.id.addItemButton);
+        savePropertiesButton = findViewById(R.id.savePropertiesButton);
+
         addItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addFlashcardItem.putExtra("collectionID",collectionId);
                 startActivityForResult(addFlashcardItem,REQUEST_RECREATE);
+            }
+        });
+        savePropertiesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setResult(RESULT_OK);
+                finish();
             }
         });
 
@@ -59,8 +68,14 @@ public class EditCollectionActivity extends AppCompatActivity {
                 db.deleteCurrentItem(itemsList.get(position).getFlashcardId());
             }
         });
-
     }
+
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_OK);
+        super.onBackPressed();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode==REQUEST_RECREATE){
