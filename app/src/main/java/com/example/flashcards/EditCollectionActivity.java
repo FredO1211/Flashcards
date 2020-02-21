@@ -67,6 +67,11 @@ public class EditCollectionActivity extends AppCompatActivity {
             public void onDeleteClick(int position) {
                 db.deleteCurrentItem(itemsList.get(position).getFlashcardId());
             }
+
+            @Override
+            public void onFavouriteClick(int position) {
+                db.setFlashcardFavourite(itemsList.get(position).getFlashcardId());
+            }
         });
     }
 

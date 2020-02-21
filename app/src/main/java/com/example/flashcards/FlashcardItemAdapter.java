@@ -18,6 +18,7 @@ public class FlashcardItemAdapter extends RecyclerView.Adapter<FlashcardItemAdap
 
     public interface OnItemClickListener {
         void onDeleteClick(int position);
+        void onFavouriteClick(int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -28,12 +29,14 @@ public class FlashcardItemAdapter extends RecyclerView.Adapter<FlashcardItemAdap
         public TextView polishMiningTextView;
         public TextView englishMiningTextView;
         public ImageView deleteItemImageView;
+        public ImageView favouriteImageView;
 
         public FlashcardItemViewHolder(@NonNull View itemView, final EditCollectionActivity editCollectionActivity, final OnItemClickListener onItemClickListener) {
             super(itemView);
             polishMiningTextView= itemView.findViewById(R.id.polishMiningTextView);
             englishMiningTextView= itemView.findViewById(R.id.englishMiningTextView);
             deleteItemImageView = itemView.findViewById(R.id.deleteItemImageView);
+            favouriteImageView = itemView.findViewById(R.id.favouriteFlashcardImageView);
 
             deleteItemImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -42,6 +45,18 @@ public class FlashcardItemAdapter extends RecyclerView.Adapter<FlashcardItemAdap
                         int position = getAdapterPosition();
                         if(position != RecyclerView.NO_POSITION){
                             onItemClickListener.onDeleteClick(position);
+                        }
+                    }
+                    editCollectionActivity.recreate();
+                }
+            });
+            favouriteImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(onItemClickListener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            onItemClickListener.onFavouriteClick(position);
                         }
                     }
                     editCollectionActivity.recreate();
@@ -68,6 +83,7 @@ public class FlashcardItemAdapter extends RecyclerView.Adapter<FlashcardItemAdap
     public void onBindViewHolder(@NonNull FlashcardItemViewHolder flashcardItemViewHolder, int i) {
         FlashcardItem currentItem= flashcardItemsArrayList.get(i);
 
+        flashcardItemViewHolder.favouriteImageView.setImageResource(currentItem.getFavouriteFlashcardResource());
         flashcardItemViewHolder.polishMiningTextView.setText(currentItem.getPolishMiningOfWord());
         flashcardItemViewHolder.englishMiningTextView.setText(currentItem.getEnglishMiningOfWord());
     }
