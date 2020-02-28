@@ -10,16 +10,23 @@ public class CreateCollectionActivity extends AppCompatActivity {
 
     private final Database db = new Database(this);
 
+    private Button createCollectionButton;
+    private Button cancelButton;
+    private EditText collectionNameEditText;
+
+    private String LOGIN;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_collection);
 
-        final Button createCollectionButton = findViewById(R.id.createCollectionButton);
-        final Button cancelButton = findViewById(R.id.cancelButton);
-        final EditText collectionNameEditText = findViewById(R.id.collectionNameEditText);
+        createCollectionButton = findViewById(R.id.createCollectionButton);
+        cancelButton = findViewById(R.id.cancelButton);
+        collectionNameEditText = findViewById(R.id.collectionNameEditText);
+
         Bundle extras =getIntent().getExtras();
-        final String LOGIN=extras.getString("login");
+        LOGIN =extras.getString("login");
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override

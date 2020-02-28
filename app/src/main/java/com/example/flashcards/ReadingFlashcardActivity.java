@@ -1,5 +1,7 @@
 package com.example.flashcards;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -11,26 +13,41 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class ReadingFlashcardActivity extends AppCompatActivity {
+
+    private Database db=new Database(this);
+
     private TextView polishMiningReadingTextView;
     private TextView englishMiningReadingTextView;
     private CardView confirmCardView;
     private CardView negateCardView;
     private Button showAnswerButton;
-    private Database db=new Database(this);
-    private int collectionId;
 
-    private void getRandomWord(FlashcardItem flashcardItem){
+    private int collectionId;
+    int i = 0;
+
+    private void getRandomWord(ArrayList<FlashcardItem> flashcardItems){
         Random random = new Random();
         int getRandomNumber = random.nextInt(2);
         switch (getRandomNumber){
             case 0:
-                polishMiningReadingTextView.setText(flashcardItem.getPolishMiningOfWord());
+                polishMiningReadingTextView.setText(flashcardItems.get(0).getPolishMiningOfWord());
                 englishMiningReadingTextView.setText(null);
                 break;
             case 1:
                 polishMiningReadingTextView.setText(null);
-                englishMiningReadingTextView.setText(flashcardItem.getEnglishMiningOfWord());
+                englishMiningReadingTextView.setText(flashcardItems.get(0).getEnglishMiningOfWord());
                 break;
+        }
+    }
+
+    private void getNextWord(ArrayList<FlashcardItem> flashcardItems){
+        if(flashcardItems.isEmpty()){
+            finish();
+        }
+        else {
+            setShowAnswerButtonAvailable();
+            setDialogButtonsUnavailable();
+            getRandomWord(flashcardItems);
         }
     }
 
@@ -58,6 +75,7 @@ public class ReadingFlashcardActivity extends AppCompatActivity {
         showAnswerButton.setVisibility(View.INVISIBLE);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,34 +91,23 @@ public class ReadingFlashcardActivity extends AppCompatActivity {
         collectionId = bundle.getInt("collectionId");
 
         final ArrayList<FlashcardItem> flashcardItems = db.returnItemsArrayListOfCollectionSortedByPoints(collectionId,10);
-        if(flashcardItems.isEmpty()){
-            finish();
-        }
-        else {
-            setShowAnswerButtonAvailable();
-            setDialogButtonsUnavailable();
-            getRandomWord(flashcardItems.get(0));
-        }
+
+        getNextWord(flashcardItems);
+
         confirmCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 flashcardItems.remove(0);
-                if(flashcardItems.isEmpty()){
-                    finish();
-                }
-                else{
-                    getRandomWord(flashcardItems.get(0));
-                    setShowAnswerButtonAvailable();
-                    setDialogButtonsUnavailable();
-                }
+                getNextWord(flashcardItems);
             }
         });
         negateCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                db.increaseReviewCounterByOne(flashcardItems.get(0).getFlashcardId());
                 flashcardItems.add(flashcardItems.get(0));
                 flashcardItems.remove(0);
-                getRandomWord(flashcardItems.get(0));
+                getRandomWord(flashcardItems);
                 setShowAnswerButtonAvailable();
                 setDialogButtonsUnavailable();
             }
@@ -108,6 +115,11 @@ public class ReadingFlashcardActivity extends AppCompatActivity {
         showAnswerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(i<flashcardItems.size()){
+                    db.setReviewCounter(0,flashcardItems.get(0).getFlashcardId());
+                    db.setLastUsingDate(db.getCurrentDate(),flashcardItems.get(0).getFlashcardId());
+                    i++;
+                }
                 polishMiningReadingTextView.setText(flashcardItems.get(0).getPolishMiningOfWord());
                 englishMiningReadingTextView.setText(flashcardItems.get(0).getEnglishMiningOfWord());
                 setShowAnswerButtonUnavailable();

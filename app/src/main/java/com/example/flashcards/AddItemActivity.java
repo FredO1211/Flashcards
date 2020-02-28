@@ -1,5 +1,7 @@
 package com.example.flashcards;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,9 +11,11 @@ import android.widget.EditText;
 public class AddItemActivity extends AppCompatActivity {
 
     private final Database db = new Database(this);
+
     private Button addFlashcardButton;
     private EditText englishMiningEditText;
     private EditText polishMiningEditText;
+
     private int collectionId;
 
     @Override
@@ -27,6 +31,7 @@ public class AddItemActivity extends AppCompatActivity {
         collectionId = bundle.getInt("collectionID");
 
         addFlashcardButton.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 db.addFlashcard(polishMiningEditText.getText().toString(),englishMiningEditText.getText().toString(),collectionId);

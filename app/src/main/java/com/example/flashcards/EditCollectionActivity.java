@@ -1,7 +1,9 @@
 package com.example.flashcards;
 
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,31 +15,36 @@ import android.widget.Button;
 import java.util.ArrayList;
 
 public class EditCollectionActivity extends AppCompatActivity {
+
+    private final Database db = new Database(this);
+
     private RecyclerView recyclerView;
     private FlashcardItemAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private FloatingActionButton addItemButton;
     private Button savePropertiesButton;
-    private final Database db = new Database(this);
+
     public ArrayList<FlashcardItem> itemsList;
+
     private final int REQUEST_RECREATE=1;
     public int collectionId;
 
-
-
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_colection);
 
+        addItemButton = findViewById(R.id.addItemButton);
+        savePropertiesButton = findViewById(R.id.savePropertiesButton);
+        recyclerView=findViewById(R.id.flashcardRecyclerView);
+
         final Intent addFlashcardItem = new Intent(this, AddItemActivity.class);
+
         Bundle bundle = getIntent().getExtras();
         collectionId = bundle.getInt("collectionId");
 
         itemsList=db.returnItemsArrayListOfCollection(collectionId);
-
-        addItemButton = findViewById(R.id.addItemButton);
-        savePropertiesButton = findViewById(R.id.savePropertiesButton);
 
         addItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,11 +61,11 @@ public class EditCollectionActivity extends AppCompatActivity {
             }
         });
 
-        recyclerView=findViewById(R.id.flashcardRecyclerView);
-        recyclerView.setHasFixedSize(true);
         layoutManager= new LinearLayoutManager(this);
-        adapter= new FlashcardItemAdapter(itemsList,db,this);
 
+        adapter= new FlashcardItemAdapter(itemsList,this);
+
+        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 

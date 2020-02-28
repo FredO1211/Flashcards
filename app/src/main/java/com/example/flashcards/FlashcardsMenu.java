@@ -14,23 +14,29 @@ import android.view.View;
 import java.util.ArrayList;
 
 public class FlashcardsMenu extends AppCompatActivity {
+
+    private final Database db = new Database(this);
+
     private RecyclerView recyclerView;
     private FlashcardsMenuAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private FloatingActionButton addCollectionButton;
-    private final Database db = new Database(this);
+
     public ArrayList<FlashcardMenuItem> collectionsList;
+
     private final int REQUEST_RECREATE=0;
     public String login;
+
     private Intent writhingFlashcardIntent;
     private Intent readingFlashcardIntent;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flashcard);
+
+        recyclerView=findViewById(R.id.recyclerView);
+        addCollectionButton= findViewById(R.id.addCollectionButton);
 
         final Intent createCollectionIntent = new Intent(this,CreateCollectionActivity.class);
         final Intent editCollectionIntent = new Intent(this,EditCollectionActivity.class);
@@ -41,7 +47,6 @@ public class FlashcardsMenu extends AppCompatActivity {
         final String LOGIN=extras.getString("login");
         this.login=LOGIN;
 
-        addCollectionButton= findViewById(R.id.addCollectionButton);
         addCollectionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,11 +57,11 @@ public class FlashcardsMenu extends AppCompatActivity {
 
         collectionsList=db.returnCollectionsArrayList(LOGIN);
 
-        recyclerView=findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
         layoutManager= new LinearLayoutManager(this);
+
         adapter= new FlashcardsMenuAdapter(collectionsList, db,this);
 
+        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
@@ -68,14 +73,14 @@ public class FlashcardsMenu extends AppCompatActivity {
 
             @Override
             public void onEditClick(int position) {
-                editCollectionIntent.putExtra("collectionId",db.getCollectionIdUsingIndex(LOGIN,position));
+                editCollectionIntent.putExtra("collectionId",db.getCollectionId(LOGIN,position));
                 startActivityForResult(editCollectionIntent,REQUEST_RECREATE);
             }
 
             @Override
             public void onPlayClick(int position) {
-                readingFlashcardIntent.putExtra("collectionId",db.getCollectionIdUsingIndex(LOGIN,position));
-                writhingFlashcardIntent.putExtra("collectionId",db.getCollectionIdUsingIndex(LOGIN,position));
+                readingFlashcardIntent.putExtra("collectionId",db.getCollectionId(LOGIN,position));
+                writhingFlashcardIntent.putExtra("collectionId",db.getCollectionId(LOGIN,position));
                 AlertDialog alertDialog=dialogBox().create();
                 alertDialog.show();
             }
@@ -91,7 +96,7 @@ public class FlashcardsMenu extends AppCompatActivity {
     AlertDialog.Builder dialogBox(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setMessage("Choose learning way")
+        builder.setMessage("Choose a learning way")
                 .setCancelable(true)
                 .setPositiveButton("By reading", new DialogInterface.OnClickListener() {
                     @Override
@@ -99,7 +104,7 @@ public class FlashcardsMenu extends AppCompatActivity {
                         startActivity(readingFlashcardIntent);
                     }
                 })
-                .setNegativeButton("By writhing", new DialogInterface.OnClickListener() {
+                .setNegativeButton("By writing", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         startActivity(writhingFlashcardIntent);

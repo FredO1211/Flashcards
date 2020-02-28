@@ -11,10 +11,14 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class FlashcardsMenuAdapter extends RecyclerView.Adapter<FlashcardsMenuAdapter.FlashcardsMenuViewHolder> {
-    private ArrayList<FlashcardMenuItem> flashcardMenuItemArrayList;
+
     private Database db;
+
     private FlashcardsMenu flashcardsMenu;
+
     private OnItemClickListener onItemClickListener;
+
+    private ArrayList<FlashcardMenuItem> flashcardMenuItemArrayList;
 
     public interface OnItemClickListener {
         void onDeleteClick(int position);
@@ -29,15 +33,16 @@ public class FlashcardsMenuAdapter extends RecyclerView.Adapter<FlashcardsMenuAd
 
     public static class FlashcardsMenuViewHolder extends  RecyclerView.ViewHolder{
 
-        public ImageView logoImageView;
-        public TextView collectionNameTextView;
-        public TextView numberOfElementsTextView;
-        public ImageView playImageView;
-        public ImageView deleteImageView;
-        public ImageView editImageView;
+        private ImageView logoImageView;
+        private TextView collectionNameTextView;
+        private TextView numberOfElementsTextView;
+        private ImageView playImageView;
+        private ImageView deleteImageView;
+        private ImageView editImageView;
 
         public FlashcardsMenuViewHolder(@NonNull View itemView, final Database db, final FlashcardsMenu flashcardsMenu, final OnItemClickListener onItemClickListener) {
             super(itemView);
+
             logoImageView = itemView.findViewById(R.id.logoImageView);
             collectionNameTextView = itemView.findViewById(R.id.collectionNameTextView);
             numberOfElementsTextView = itemView.findViewById(R.id.numberOfElementsTextView);

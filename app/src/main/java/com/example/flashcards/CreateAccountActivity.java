@@ -9,8 +9,16 @@ import android.widget.Toast;
 
 public class CreateAccountActivity extends AppCompatActivity {
 
+    private final Database db= new Database(this);
 
-    final int DURATION = Toast.LENGTH_SHORT;
+    private EditText loginEditText;
+    private EditText nameEditText;
+    private EditText passwordEditText;
+    private EditText confirmPasswordEditText;
+    private CardView acceptCardView;
+    private CardView cancelCardView;
+
+    private final int DURATION = Toast.LENGTH_SHORT;
 
     final String EXISTING_LOGIN_TOAST_TEXT="Login is already exist!";
     final String DIFFERENT_PASSWORDS_TOAST_TEXT ="Passwords aren't the same!";
@@ -46,18 +54,16 @@ public class CreateAccountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
 
-        final Database db= new Database(this);
-
         final Toast EXISTING_LOGIN_DATA_TOAST = Toast.makeText(getApplicationContext(), EXISTING_LOGIN_TOAST_TEXT, DURATION);
         final Toast DIFFERENT_PASSWORDS_DATA_TOAST = Toast.makeText(getApplicationContext(), DIFFERENT_PASSWORDS_TOAST_TEXT, DURATION);
 
-        final EditText loginEditText = findViewById(R.id.loginEditText);
-        final EditText nameEditText = findViewById(R.id.nameEditText);
-        final EditText passwordEditText = findViewById(R.id.passwordEditText);
-        final EditText confirmPasswordEditText = findViewById(R.id.confirmPasswordEditText);
+        loginEditText = findViewById(R.id.loginEditText);
+        nameEditText = findViewById(R.id.nameEditText);
+        passwordEditText = findViewById(R.id.passwordEditText);
+        confirmPasswordEditText = findViewById(R.id.confirmPasswordEditText);
 
-        final CardView acceptCardView = findViewById(R.id.acceptCardView);
-        final CardView cancelCardView = findViewById(R.id.cancelCardView);
+        acceptCardView = findViewById(R.id.acceptCardView);
+        cancelCardView = findViewById(R.id.cancelCardView);
 
 
         cancelCardView.setOnClickListener(new View.OnClickListener() {

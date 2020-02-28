@@ -1,6 +1,8 @@
 package com.example.flashcards;
 
 import android.graphics.Color;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,13 +15,18 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class WrithingFlashcardActivity extends AppCompatActivity {
+
+    Database db= new Database(this);
+
     TextView askingTextView;
     TextView correctAnswer;
     EditText answerEditText;
     Button checkButton;
     ImageView askingLanguageFlag;
     ImageView answerLanguageFlag;
+
     private int collectionId;
+    int i=0;
 
     private void getRandomWord(FlashcardItem flashcardItem){
         Random random = new Random();
@@ -40,7 +47,14 @@ public class WrithingFlashcardActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void checkCurrentAnswer(ArrayList<FlashcardItem> flashcardItems){
+        
+        if(i<flashcardItems.size()){
+            db.setReviewCounter(0,flashcardItems.get(0).getFlashcardId());
+            db.setLastUsingDate(db.getCurrentDate(),flashcardItems.get(0).getFlashcardId());
+        }
+
         if(answerEditText.getText().toString().toUpperCase()
                 .equals(correctAnswer.getText().toString().toUpperCase())){
             answerEditText.setTextColor(Color.GREEN);
@@ -51,6 +65,7 @@ public class WrithingFlashcardActivity extends AppCompatActivity {
             }
         }
         else{
+            db.increaseReviewCounterByOne(flashcardItems.get(0).getFlashcardId());
             answerEditText.setTextColor(Color.RED);
             checkButton.setText("Next");
             correctAnswer.setVisibility(View.VISIBLE);
@@ -66,6 +81,7 @@ public class WrithingFlashcardActivity extends AppCompatActivity {
         checkButton.setText("Check");
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +93,6 @@ public class WrithingFlashcardActivity extends AppCompatActivity {
         checkButton = findViewById(R.id.checkButton);
         askingLanguageFlag= findViewById(R.id.askingLanguageFlag);
         answerLanguageFlag = findViewById(R.id.answerLanguageFlag);
-        Database db = new Database(this);
 
         Bundle bundle = getIntent().getExtras();
         collectionId = bundle.getInt("collectionId");

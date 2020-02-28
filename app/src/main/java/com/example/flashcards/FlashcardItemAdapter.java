@@ -11,10 +11,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class FlashcardItemAdapter extends RecyclerView.Adapter<FlashcardItemAdapter.FlashcardItemViewHolder> {
-    private ArrayList<FlashcardItem> flashcardItemsArrayList;
-    private Database db;
+
     private OnItemClickListener onItemClickListener;
     private EditCollectionActivity editCollectionActivity;
+
+    private ArrayList<FlashcardItem> flashcardItemsArrayList;
 
     public interface OnItemClickListener {
         void onDeleteClick(int position);
@@ -33,6 +34,7 @@ public class FlashcardItemAdapter extends RecyclerView.Adapter<FlashcardItemAdap
 
         public FlashcardItemViewHolder(@NonNull View itemView, final EditCollectionActivity editCollectionActivity, final OnItemClickListener onItemClickListener) {
             super(itemView);
+
             polishMiningTextView= itemView.findViewById(R.id.polishMiningTextView);
             englishMiningTextView= itemView.findViewById(R.id.englishMiningTextView);
             deleteItemImageView = itemView.findViewById(R.id.deleteItemImageView);
@@ -50,6 +52,7 @@ public class FlashcardItemAdapter extends RecyclerView.Adapter<FlashcardItemAdap
                     editCollectionActivity.recreate();
                 }
             });
+
             favouriteImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -65,9 +68,8 @@ public class FlashcardItemAdapter extends RecyclerView.Adapter<FlashcardItemAdap
         }
     }
 
-    public FlashcardItemAdapter(ArrayList<FlashcardItem> flashcardItemsArrayList, Database db, EditCollectionActivity editCollectionActivity) {
+    public FlashcardItemAdapter(ArrayList<FlashcardItem> flashcardItemsArrayList, EditCollectionActivity editCollectionActivity) {
         this.flashcardItemsArrayList = flashcardItemsArrayList;
-        this.db = db;
         this.editCollectionActivity = editCollectionActivity;
     }
 
