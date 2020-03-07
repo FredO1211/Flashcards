@@ -91,6 +91,7 @@ public class ReadingFlashcardActivity extends AppCompatActivity {
         collectionId = bundle.getInt("collectionId");
 
         final ArrayList<FlashcardItem> flashcardItems = db.returnItemsArrayListOfCollectionSortedByPoints(collectionId,10);
+        i=flashcardItems.size();
 
         getNextWord(flashcardItems);
 
@@ -101,6 +102,7 @@ public class ReadingFlashcardActivity extends AppCompatActivity {
                 getNextWord(flashcardItems);
             }
         });
+
         negateCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,13 +114,14 @@ public class ReadingFlashcardActivity extends AppCompatActivity {
                 setDialogButtonsUnavailable();
             }
         });
+
         showAnswerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(i<flashcardItems.size()){
+                if(i>0){
                     db.setReviewCounter(0,flashcardItems.get(0).getFlashcardId());
                     db.setLastUsingDate(db.getCurrentDate(),flashcardItems.get(0).getFlashcardId());
-                    i++;
+                    i--;
                 }
                 polishMiningReadingTextView.setText(flashcardItems.get(0).getPolishMiningOfWord());
                 englishMiningReadingTextView.setText(flashcardItems.get(0).getEnglishMiningOfWord());

@@ -26,7 +26,7 @@ public class WrithingFlashcardActivity extends AppCompatActivity {
     ImageView answerLanguageFlag;
 
     private int collectionId;
-    int i=0;
+    int i;
 
     private void getRandomWord(FlashcardItem flashcardItem){
         Random random = new Random();
@@ -49,20 +49,20 @@ public class WrithingFlashcardActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void checkCurrentAnswer(ArrayList<FlashcardItem> flashcardItems){
-        
-        if(i<flashcardItems.size()){
+        if(i>0){
             db.setReviewCounter(0,flashcardItems.get(0).getFlashcardId());
             db.setLastUsingDate(db.getCurrentDate(),flashcardItems.get(0).getFlashcardId());
+            i--;
         }
 
         if(answerEditText.getText().toString().toUpperCase()
                 .equals(correctAnswer.getText().toString().toUpperCase())){
-            answerEditText.setTextColor(Color.GREEN);
-            checkButton.setText("Next");
             flashcardItems.remove(0);
             if(flashcardItems.isEmpty()){
                 finish();
             }
+            answerEditText.setTextColor(Color.GREEN);
+            checkButton.setText("Next");
         }
         else{
             db.increaseReviewCounterByOne(flashcardItems.get(0).getFlashcardId());
@@ -74,11 +74,15 @@ public class WrithingFlashcardActivity extends AppCompatActivity {
         }
     }
     private void setNextQuestion(ArrayList<FlashcardItem> flashcardItems){
-        getRandomWord(flashcardItems.get(0));
-        correctAnswer.setVisibility(View.INVISIBLE);
-        answerEditText.setText(null);
-        answerEditText.setTextColor(Color.BLACK);
-        checkButton.setText("Check");
+        try {
+            getRandomWord(flashcardItems.get(0));
+            correctAnswer.setVisibility(View.INVISIBLE);
+            answerEditText.setText(null);
+            answerEditText.setTextColor(Color.BLACK);
+            checkButton.setText("Check");
+        } catch (Exception e) {
+            this.finish();
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -98,6 +102,8 @@ public class WrithingFlashcardActivity extends AppCompatActivity {
         collectionId = bundle.getInt("collectionId");
 
         final ArrayList<FlashcardItem> flashcardItems = db.returnItemsArrayListOfCollectionSortedByPoints(collectionId,10);
+        i=flashcardItems.size();
+
         if(flashcardItems.isEmpty()){
             finish();
         }

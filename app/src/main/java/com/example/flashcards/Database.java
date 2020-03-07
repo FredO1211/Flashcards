@@ -12,6 +12,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
 
 public class Database extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "Flashcards_database.db";
@@ -355,7 +356,7 @@ public class Database extends SQLiteOpenHelper {
     public void setLastUsingDate(String date, int flashcardId){
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("UPDATE flashcards " +
-                "SET last_reviews_counter = '"+ date +
+                "SET last_using_date = '"+ date +
                 "' WHERE flashcard_id = '"+flashcardId+"';");
     }
 
@@ -370,10 +371,12 @@ public class Database extends SQLiteOpenHelper {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void recalculatePoints(Cursor cursor){
+        setPoints(0,getItemIdUsingIndex(cursor));
         setPoints(
                 dayCounterBetweenTwoDates(getLastUsingDate(cursor),getCurrentDate())*2
                         +getLastReviewingCounter(cursor)*3
-                        +getFavouriteFlashcardInt(cursor)*5,
+                        +getFavouriteFlashcardInt(cursor)*5
+                        +new Random().nextInt(4),
                 getItemIdUsingIndex(cursor));
     }
 
